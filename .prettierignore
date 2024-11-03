@@ -3,3 +3,6 @@ coverage
 dist
 build
 /*.js
+.prettierrc
+nest-cli.json
+tsconfig.json

@@ -9,6 +9,10 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
+    "eslint:recommended",
+    "plugin:jest/recommended",
+    "next/core-web-vitals",
+    "prettier"
   ],
   root: true,
   env: {
