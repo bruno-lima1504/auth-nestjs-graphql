@@ -1,0 +1,12 @@
+services:
+  database:
+    image: "postgres:16.0-alpine3.18"
+    container_name: "postgres-graphql-dev"
+    restart: always
+    tty: true
+    ports:
+      - "5432:5432"
+    volumes:
+      - .docker/dbdata:/var/lib/postgres/data
+    env_file:
+      - ../.env
