@@ -8,10 +8,8 @@ export class User {
   name: string;
   @Field()
   email: string;
-  @Field()
+
   password: string;
-  @Field()
-  token: string;
   @Field()
   createdAt: Date;
 }
