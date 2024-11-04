@@ -22,9 +22,15 @@ type AuthResponse {
   createdAt: DateTime!
 }
 
+type AuthorOutput {
+  users: [User!]!
+  count: Float!
+}
+
 type Query {
   hello: String!
   AuthUser(data: AuthUsersInput!): AuthResponse!
+  ListUser: AuthorOutput!
 }
 
 input AuthUsersInput {

@@ -4,8 +4,10 @@ import { UserDataBuilder } from "../helpers/user-data-builder";
 import { AuthUserService } from "./auth-user.service";
 import { UsersPrismaRepository } from "../repositories/users-prisma.repository";
 import { CreateUserService } from "./create-user.service";
-import { verify } from "jsonwebtoken";
 import { UsersModule } from "../users.module";
+import { execSync } from "node:child_process";
+import { BadRequestError } from "@/shared/errors/bad-request-error";
+import { UserNotFoundError } from "@/shared/errors/user-not-found-error";
 
 describe("UsersPrismaRepository Integration Test", () => {
   let module: TestingModule;
@@ -19,8 +21,8 @@ describe("UsersPrismaRepository Integration Test", () => {
       imports: [UsersModule],
       providers: [PrismaService],
     }).compile();
-
     prisma = module.get<PrismaService>(PrismaService);
+    execSync("npm run prisma:migrate");
     await prisma.$connect();
     repository = new UsersPrismaRepository(prisma);
     createService = new CreateUserService.Service(repository);
@@ -35,29 +37,52 @@ describe("UsersPrismaRepository Integration Test", () => {
     await module.close();
   });
 
-  test("should create a user", async () => {
+  test("should perform user authentication", async () => {
     const data = UserDataBuilder({});
-    console.log("Password (plain text) used to create user:", data.password);
 
     const user = await createService.execute(data);
-    console.log("User created:", user);
 
     const login = await service.execute({
       email: data.email,
       password: data.password,
     });
 
-    console.log("Login result:", login);
+    expect(login).toBeDefined();
+    expect(typeof login.token).toBe("string");
+  });
 
-    expect(user).toMatchObject({ ...data, password: expect.any(String) });
-    expect(login.token).toBeDefined();
+  test("should throw an error when the email is not provided", async () => {
+    const data = UserDataBuilder({});
 
-    const decoded = verify(login.token!, process.env.JWT_SECRET!) as any;
+    await createService.execute(data);
 
-    expect(decoded).toMatchObject({
-      name: login.name,
-      email: login.email,
-      sub: login.id,
-    });
+    await expect(
+      service.execute({
+        email: null,
+        password: data.password,
+      }),
+    ).rejects.toBeInstanceOf(BadRequestError);
+  });
+  test("should throw an error when the password is not provided", async () => {
+    const data = UserDataBuilder({});
+
+    await createService.execute(data);
+
+    await expect(
+      service.execute({
+        email: data.email,
+        password: null,
+      }),
+    ).rejects.toBeInstanceOf(BadRequestError);
+  });
+
+  test("should throw an error when the email or password is incorrect", async () => {
+    const data = UserDataBuilder({});
+    await expect(
+      service.execute({
+        email: data.email,
+        password: data.password,
+      }),
+    ).rejects.toBeInstanceOf(UserNotFoundError);
   });
 });

@@ -53,7 +53,6 @@ export namespace AuthUserService {
           expiresIn: "3d",
         },
       );
-      console.log(token);
 
       return {
         id: user.id,

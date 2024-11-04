@@ -5,7 +5,7 @@ import { DatabaseModule } from "./database/database.module";
 import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
-import { UsersModule } from './users/users.module';
+import { UsersModule } from "./users/users.module";
 import path from "node:path";
 
 @Module({

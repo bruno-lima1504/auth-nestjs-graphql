@@ -16,4 +16,12 @@ export class UsersPrismaRepository implements IUsersRepository {
       where: { email },
     });
   }
+
+  async findAllWithCount(): Promise<{ users: User[]; count: number }> {
+    const [users, count] = await this.prisma.$transaction([
+      this.prisma.user.findMany(),
+      this.prisma.user.count(),
+    ]);
+    return { users, count };
+  }
 }

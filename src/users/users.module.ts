@@ -1,10 +1,11 @@
-import { Module } from "@nestjs/common";
+import { Module, NestModule, MiddlewareConsumer } from "@nestjs/common";
 import { UsersResolver } from "./graphql/resolvers/users.resolver";
 import { DatabaseModule } from "@/database/database.module";
 import { PrismaService } from "@/database/prisma/prisma.service";
 import { UsersPrismaRepository } from "./repositories/users-prisma.repository";
 import { AuthUserService } from "./services/auth-user.service";
 import { CreateUserService } from "./services/create-user.service";
+import { ListUsersService } from "./services/list-users.service";
 
 @Module({
   imports: [DatabaseModule],
@@ -35,7 +36,18 @@ import { CreateUserService } from "./services/create-user.service";
       },
       inject: ["UserRepository"],
     },
+    {
+      provide: ListUsersService.Service,
+      useFactory: (userRepository: UsersPrismaRepository) => {
+        return new ListUsersService.Service(userRepository);
+      },
+      inject: ["UserRepository"],
+    },
   ],
-  exports: [AuthUserService.Service],
+  exports: [
+    AuthUserService.Service,
+    ListUsersService.Service,
+    CreateUserService.Service,
+  ],
 })
 export class UsersModule {}
