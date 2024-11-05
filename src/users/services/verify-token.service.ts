@@ -20,8 +20,6 @@ export namespace VerifyUserService {
 
       const { sub } = verify(token, process.env.JWT_SECRET) as Payload;
 
-      console.log(sub);
-
       const data = await this.usersRepository.findById(sub);
       return data;
     }
