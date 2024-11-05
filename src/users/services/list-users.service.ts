@@ -1,7 +1,4 @@
-import { BadRequestError } from "@/shared/errors/bad-request-error";
-import { ConflictError } from "@/shared/errors/conflict-error";
 import { UsersPrismaRepository } from "../repositories/users-prisma.repository";
-import * as bcrypt from "bcryptjs";
 import { User } from "../graphql/models/users";
 
 export namespace ListUsersService {
@@ -17,14 +14,14 @@ export namespace ListUsersService {
     email: string;
   };
 
-  export type Teste = {
+  export type ListOutput = {
     users: User[];
     count: number;
   };
 
   export class Service {
     constructor(private usersRepository: UsersPrismaRepository) {}
-    async execute(): Promise<Teste> {
+    async execute(): Promise<ListOutput> {
       const data = await this.usersRepository.findAllWithCount();
       return data;
     }

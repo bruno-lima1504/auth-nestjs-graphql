@@ -22,7 +22,7 @@ type AuthResponse {
   createdAt: DateTime!
 }
 
-type AuthorOutput {
+type UsersOutput {
   users: [User!]!
   count: Float!
 }
@@ -30,12 +30,17 @@ type AuthorOutput {
 type Query {
   hello: String!
   AuthUser(data: AuthUsersInput!): AuthResponse!
-  ListUser: AuthorOutput!
+  ListUser: UsersOutput!
+  VerifyUser(data: VerifyUsersInput!): User!
 }
 
 input AuthUsersInput {
   email: String!
   password: String!
+}
+
+input VerifyUsersInput {
+  authToken: String!
 }
 
 type Mutation {

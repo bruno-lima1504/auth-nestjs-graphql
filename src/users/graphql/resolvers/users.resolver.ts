@@ -7,10 +7,12 @@ import { AuthUsersInput } from "../inputs/auth-users.input";
 import { AuthUserService } from "@/users/services/auth-user.service";
 import { AuthResponse } from "../models/auth-response";
 import { ListUsersService } from "@/users/services/list-users.service";
-import { AuthorOutput } from "@/users/dto/users-output";
+import { UsersOutput } from "@/users/dto/users-output";
 import { UserListResult } from "../models/list-users-reponse";
 import { UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../../guards/isAuthenticated.guard";
+import { VerifyUserService } from "@/users/services/verify-token.service";
+import { VerifyUsersInput } from "../inputs/verify-users-input";
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -23,6 +25,9 @@ export class UsersResolver {
   @Inject(ListUsersService.Service)
   private readonly ListUsersService: ListUsersService.Service;
 
+  @Inject(VerifyUserService.Service)
+  private readonly VerifyUserService: VerifyUserService.Service;
+
   @Mutation(() => User)
   async createUser(@Args("data") data: CreateUsersInput) {
     return this.CreateUserService.execute(data);
@@ -33,9 +38,14 @@ export class UsersResolver {
     return this.AuthUserService.execute(data);
   }
 
-  @Query(() => AuthorOutput)
+  @Query(() => UsersOutput)
   @UseGuards(JwtAuthGuard)
-  async ListUser(): Promise<AuthorOutput> {
+  async ListUser(): Promise<UsersOutput> {
     return this.ListUsersService.execute();
+  }
+
+  @Query(() => User)
+  async VerifyUser(@Args("data") data: VerifyUsersInput): Promise<User> {
+    return this.VerifyUserService.execute(data);
   }
 }

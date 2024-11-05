@@ -3,6 +3,7 @@ import { UsersPrismaRepository } from "./users-prisma.repository";
 import { PrismaClient } from "@prisma/client";
 import { execSync } from "node:child_process";
 import { UserDataBuilder } from "../helpers/user-data-builder";
+import { UserNotFoundError } from "@/shared/errors/user-not-found-error";
 
 describe("UsersPrismaRepository Integration Test", () => {
   let module: TestingModule;
@@ -35,6 +36,14 @@ describe("UsersPrismaRepository Integration Test", () => {
     const user = await prisma.user.create({ data });
 
     const result = await repository.findByEmail(user.email);
+    expect(result).toStrictEqual(user);
+  });
+
+  test("should find a user by id", async () => {
+    const data = UserDataBuilder({});
+    const user = await prisma.user.create({ data });
+
+    const result = await repository.findById(user.id);
     expect(result).toStrictEqual(user);
   });
 });
