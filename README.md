@@ -25,6 +25,10 @@ Parar serviços web (Docker):
 
     - npm run services:down
 
+Gerar o Prisma Client:
+
+    - npx prisma generate
+
 Subir as Migrations:
 
     - npx prisma migrations dev(para testes) ou deploy(para produção)

@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "npm run services:up && npm run wait-for-postgres && npx prisma migrate dev && nest start",
+    "dev": "npm run services:up && npm run wait-for-postgres && npx prisma generate && npx prisma migrate dev && nest start",
     "build": "nest build",
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
