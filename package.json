@@ -8,7 +8,6 @@
   "scripts": {
     "dev": "npm run services:up && npm run wait-for-postgres && npx prisma generate && npx prisma migrate dev && nest start",
     "build": "nest build",
-    "vercel-build": "nest build",
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
     "lint:eslint:check": "next lint --dir .",
